@@ -7,7 +7,7 @@ SELECT
     TRIM(CAST(stockcode AS VARCHAR)) AS stock_code,
     TRIM(CAST(customerbuygrp AS VARCHAR)) AS customer_buy_group,
     ROUND(COALESCE(fixedprice, 0), 2) AS price
-FROM "icebase"."dealers_360_1".sor_contract_price
+FROM "icebase"."dealers_360_2".sor_contract_price
 WHERE stockcode IS NOT NULL AND TRIM(CAST(stockcode AS VARCHAR)) <> ''
 
 UNION ALL
@@ -16,11 +16,11 @@ SELECT
     TRIM(CAST(stockcode AS VARCHAR)) AS stock_code,
     'NONE' AS customer_buy_group,
     ROUND(COALESCE(sellingprice, 0), 2) AS price
-FROM "icebase"."dealers_360_1".inv_price
+FROM "icebase"."dealers_360_2".inv_price
 WHERE stockcode IS NOT NULL 
   AND TRIM(CAST(stockcode AS VARCHAR)) <> ''
   AND TRIM(CAST(stockcode AS VARCHAR)) NOT IN (
       SELECT DISTINCT TRIM(CAST(stockcode AS VARCHAR)) 
-      FROM "icebase"."dealers_360_1".sor_contract_price 
+      FROM "icebase"."dealers_360_2".sor_contract_price 
       WHERE stockcode IS NOT NULL AND TRIM(CAST(stockcode AS VARCHAR)) <> ''
   )

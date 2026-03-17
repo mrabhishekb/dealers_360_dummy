@@ -80,7 +80,7 @@ SELECT
     -- System Reference
     a.timestamp AS record_timestamp
 
-FROM "icebase"."dealers_360_1".artrandetail_info a
-LEFT JOIN "icebase"."dealers_360_1".invoices_info i
+FROM "icebase"."dealers_360_2".artrandetail_info a
+LEFT JOIN "icebase"."dealers_360_2".invoices_info i
     ON TRIM(a.invoice) = TRIM(i.invoice)
 WHERE a.invoice IS NOT NULL AND TRIM(a.invoice) <> ''

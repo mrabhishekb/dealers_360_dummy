@@ -11,10 +11,10 @@ WITH product_policies AS (
         p.productcode AS product_code,
         p.productclass AS product_class,
         p.product_id__c AS product_id
-    FROM "icebase"."dealers_360_1".entitlement_product epr
-    LEFT JOIN "icebase"."dealers_360_1".entitlement_policy ep
+    FROM "icebase"."dealers_360_2".entitlement_product epr
+    LEFT JOIN "icebase"."dealers_360_2".entitlement_policy ep
         ON epr.policyid = ep.id
-    LEFT JOIN "icebase"."dealers_360_1".product p
+    LEFT JOIN "icebase"."dealers_360_2".product p
         ON SUBSTR(epr.productid, 1, 15) = SUBSTR(p.product_id__c, 1, 15)
     WHERE epr.policyid IS NOT NULL
 ),
