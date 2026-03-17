@@ -18,7 +18,7 @@ lens:
     url: https://github.com/mrabhishekb/dealers_360_dummy
     lensBaseDir: dealers_360_dummy/model
     syncFlags:
-      - --ref=main
+      - --ref=master
 
   api:   # optional
     replicas: 3 # optional
@@ -58,11 +58,3 @@ lens:
       limits:
         cpu: 6000m
         memory: 8000Mi
-
-
-
-
-
-
-
-
