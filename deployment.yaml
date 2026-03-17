@@ -1,69 +1,68 @@
----
 version: v1alpha
-name: "dealers-360-dummy"
+name: "dealers360-dummy-model"
 layer: user
 type: lens
 tags:
-  - Tier.Gold
-description: "Dealers Intelligence semantic model (DUMMY DATA) provides comprehensive dealer analytics for VIP tier tracking, order analysis, product mix insights, and regional performance. Uses generated dummy data in icebase.dealers_360."
+  - lens
+description: This semantic model provides dummy model for deakers_360 data product.
 lens:
   compute: runnable-default
-  secrets:
-    - name: sales3601
-      allKeys: true
+  #secrets:
+   # - name: bitbucket-cred-np
+      #allKeys: true
   source:
     type: minerva
-    name: minervac
-    catalog: icebase 
-  repo:                               
-    url: https://bitbucket.org/rubik_/solutions-mobility
-    lensBaseDir: solutions-mobility/dealers-360-2/dealers_360_dummy/model
+    name: miniature
+    catalog: icebase
+  repo:
+    url: https://github.com/mrabhishekb/dealers_360_dummy
+    lensBaseDir: dealers_360_dummy/model
     syncFlags:
-      - --ref=demo
-  api:
-    replicas: 2
-    logLevel: info
-    envs:
-      LENS2_SCHEDULED_REFRESH_TIMEZONES: "UTC,America/Vancouver,America/Toronto"
-    resources:
-      requests:
-        cpu: 250m
-        memory: 256Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
-  worker:
-    replicas: 1
-    logLevel: info
-    envs:
-      LENS2_SCHEDULED_REFRESH_TIMEZONES: "UTC,America/Vancouver,America/Toronto"
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        cpu: 400m
-        memory: 512Mi
-  router:
-    logLevel: info
-    envs:
-      LENS2_SCHEDULED_REFRESH_TIMEZONES: "UTC,America/Vancouver,America/Toronto"
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        cpu: 400m
-        memory: 512Mi
+      - --ref=main
 
-  metric:
-    logLevel: info
-    replicas: 1
-    resources:
+  api:   # optional
+    replicas: 3 # optional
+    logLevel: Info  # optional
+    envs:
+      LENS2SQL_DB_QUERY_TIMEOUT: 600
+      LENS2SQL_AUTH_EXPIRE_SECS: 3600
+    resources: # optional
       requests:
-        cpu: 100m
-        memory: 128Mi
+        cpu: 1000m
+        memory: 2500Mi
       limits:
-        cpu: 200m
-        memory: 512Mi
+        cpu: 6000m
+        memory: 8000Mi
+  worker: # optional
+    replicas: 2 # optional
+    logLevel: Info  # optional
+    envs:
+      LENS2SQL_DB_QUERY_TIMEOUT: 600
+      LENS2SQL_AUTH_EXPIRE_SECS: 3600
+    resources: # optional
+      requests:
+        cpu: 1000m
+        memory: 2500Mi
+      limits:
+        cpu: 6000m
+        memory: 8000Mi
+  router: # optional
+    logLevel: info  # optional
+    envs:
+      LENS2SQL_DB_QUERY_TIMEOUT: 600
+      LENS2SQL_AUTH_EXPIRE_SECS: 3600
+    resources: # optional
+      requests:
+        cpu: 1000m
+        memory: 2500Mi
+      limits:
+        cpu: 6000m
+        memory: 8000Mi
+
+
+
+
+
+
+
 
