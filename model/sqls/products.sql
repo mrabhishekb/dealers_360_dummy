@@ -1,4 +1,4 @@
--- Product Master Data (DUMMY DATA - icebase.dealers_360)
+-- Product Master Data (DUMMY DATA - icebase.dealers_360_3)
 -- Product information from Syspro Inventory
 -- Primary Key: stock_code
 
@@ -98,5 +98,5 @@ SELECT
     NULLIF(TRIM(stock_on_hold), '') AS stock_on_hold,
     NULLIF(TRIM(stock_on_hold_reason), '') AS stock_on_hold_reason
 
-FROM "icebase"."dealers_360_2".inventory_info
+FROM "icebase"."dealers_360_3".inventory_info
 WHERE stock_code IS NOT NULL AND TRIM(stock_code) <> ''

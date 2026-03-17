@@ -1,4 +1,4 @@
--- Warehouse Inventory Data (DUMMY DATA - icebase.dealers_360)
+-- Warehouse Inventory Data (DUMMY DATA - icebase.dealers_360_3)
 -- Stock levels and movement by product and warehouse
 -- Primary Key: stock_code + warehouse (composite)
 
@@ -60,5 +60,5 @@ SELECT
     CAST(salesqty11 AS DOUBLE) AS sales_qty_month_11,
     CAST(salesqty12 AS DOUBLE) AS sales_qty_month_12
 
-FROM "icebase"."dealers_360_2".inv_warehouse
+FROM "icebase"."dealers_360_3".inv_warehouse
 WHERE stockcode IS NOT NULL AND TRIM(stockcode) <> ''

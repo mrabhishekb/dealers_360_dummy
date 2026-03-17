@@ -1,4 +1,4 @@
--- Sales Forecast Data (DUMMY DATA - icebase.dealers_360)
+-- Sales Forecast Data (DUMMY DATA - icebase.dealers_360_3)
 -- SalesQty1-12 from InvWarehouse = Forecast values for Jan-Dec
 -- Filtered to ProductUnitType = 'Whole Good' only
 -- Aggregated by Product Category, Model, Family from Inventory Info
@@ -28,7 +28,7 @@ WITH sku_forecast AS (
         COALESCE(salesqty7, 0) + COALESCE(salesqty8, 0) + COALESCE(salesqty9, 0) +
         COALESCE(salesqty10, 0) + COALESCE(salesqty11, 0) + COALESCE(salesqty12, 0) AS forecast_total
         
-    FROM "icebase"."dealers_360_2".inv_warehouse
+    FROM "icebase"."dealers_360_3".inv_warehouse
     WHERE stockcode IS NOT NULL AND TRIM(CAST(stockcode AS VARCHAR)) <> ''
 ),
 
@@ -58,7 +58,7 @@ sku_with_category AS (
         s.forecast_total
         
     FROM sku_forecast s
-    INNER JOIN "icebase"."dealers_360_2".inventory_info p
+    INNER JOIN "icebase"."dealers_360_3".inventory_info p
         ON s.stock_code = TRIM(CAST(p.stock_code AS VARCHAR))
     WHERE TRIM(CAST(p.product_unit_type AS VARCHAR)) = 'Whole Good'
 )

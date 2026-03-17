@@ -1,4 +1,4 @@
--- AR Transaction Detail Data (DUMMY DATA - icebase.dealers_360)
+-- AR Transaction Detail Data (DUMMY DATA - icebase.dealers_360_3)
 -- Invoice line item details from Accounts Receivable
 -- Primary Key: invoice_number + detail_line
 
@@ -80,7 +80,7 @@ SELECT
     -- System Reference
     a.timestamp AS record_timestamp
 
-FROM "icebase"."dealers_360_2".artrandetail_info a
-LEFT JOIN "icebase"."dealers_360_2".invoices_info i
+FROM "icebase"."dealers_360_3".artrandetail_info a
+LEFT JOIN "icebase"."dealers_360_3".invoices_info i
     ON TRIM(a.invoice) = TRIM(i.invoice)
 WHERE a.invoice IS NOT NULL AND TRIM(a.invoice) <> ''

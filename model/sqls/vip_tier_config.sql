@@ -1,4 +1,4 @@
--- VIP Tier Configuration (DUMMY DATA - icebase.dealers_360)
+-- VIP Tier Configuration (DUMMY DATA - icebase.dealers_360_3)
 -- Use Case 1: VIP Spending & Performance Tracking
 -- Defines tier thresholds for dealer classification
 -- 4 Tiers: Bronze ($0-$50K), Silver ($50K-$100K), Gold ($100K-$200K), Platinum ($200K+)
@@ -36,4 +36,4 @@ SELECT
         ELSE 'Platinum (Max)'
     END AS next_tier,
     true AS is_active
-FROM "icebase"."dealers_360_2".vip_tier_config
+FROM "icebase"."dealers_360_3".vip_tier_config

@@ -1,4 +1,4 @@
--- Dealers Master Data (DUMMY DATA - icebase.dealers_360)
+-- Dealers Master Data (DUMMY DATA - icebase.dealers_360_3)
 -- Use Case 1: VIP Spending & Performance Tracking
 -- Use Case 3: Regional Data Integration & Geo-Based Insights
 -- Primary table for dealer identification, credit status, and regional analysis
@@ -118,5 +118,5 @@ SELECT
     -- Data Source
     data_source
     
-FROM "icebase"."dealers_360_2".dealers_data
+FROM "icebase"."dealers_360_3".dealers_data
 WHERE dealer_code IS NOT NULL

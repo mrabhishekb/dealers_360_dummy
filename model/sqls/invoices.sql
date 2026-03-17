@@ -1,4 +1,4 @@
--- Invoice Header Data (DUMMY DATA - icebase.dealers_360)
+-- Invoice Header Data (DUMMY DATA - icebase.dealers_360_3)
 -- Invoice summary information from Syspro AR
 -- Primary Key: invoice_number
 
@@ -49,12 +49,12 @@ SELECT
     -- System Reference
     timestamp AS record_timestamp
 
-FROM "icebase"."dealers_360_2".invoices_info i
+FROM "icebase"."dealers_360_3".invoices_info i
 LEFT JOIN (
     SELECT 
         TRIM(invoice) AS invoice_number,
         SUM(CAST(qtyinvoiced AS INTEGER)) AS qty_invoiced
-    FROM "icebase"."dealers_360_2".artrandetail_info
+    FROM "icebase"."dealers_360_3".artrandetail_info
     WHERE invoice IS NOT NULL AND TRIM(invoice) <> ''
     GROUP BY TRIM(invoice)
 ) qty_agg ON TRIM(i.invoice) = qty_agg.invoice_number

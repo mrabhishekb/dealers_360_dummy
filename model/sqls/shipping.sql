@@ -1,4 +1,4 @@
--- Shipping / Order Tracking Data (DUMMY DATA - icebase.dealers_360)
+-- Shipping / Order Tracking Data (DUMMY DATA - icebase.dealers_360_3)
 -- Shipment tracking information from Harmar Order Tracking
 -- Primary Key: shipping_id (InternalID)
 
@@ -48,5 +48,5 @@ SELECT
     -- Process Date/Time
     processdatetime AS process_date_time
 
-FROM "icebase"."dealers_360_2".harmar_order_tracking
+FROM "icebase"."dealers_360_3".harmar_order_tracking
 WHERE internalid IS NOT NULL AND TRIM(internalid) <> ''
