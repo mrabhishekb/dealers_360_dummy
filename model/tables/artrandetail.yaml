@@ -1,0 +1,301 @@
+tables:
+
+  - name: artrandetail
+    sql: {{ load_sql('artrandetail') }}
+    description: "Invoices from Accounts Receivable for sales analysis, margin tracking, and freight cost management."
+    public: true
+
+    joins:
+      - name: products
+        sql: "{TABLE.stock_code} = {products.stock_code}"
+        relationship: many_to_one
+
+      - name: invoices
+        sql: "{TABLE.invoice_number} = {invoices.invoice_number}"
+        relationship: many_to_one
+
+    dimensions:
+      # Primary Key
+      - name: artrandetail_id
+        description: "Unique identifier (invoice_number + detail_line)."
+        type: string
+        column: artrandetail_id
+        primary_key: true
+        public: true
+
+      # Time Period
+      - name: trn_year
+        description: "Transaction year e.g. 2025."
+        type: number
+        column: trn_year
+        public: true
+
+      - name: trn_month
+        description: "Transaction month (1-12)."
+        type: number
+        column: trn_month
+        public: true
+
+      - name: trn_month_name
+        description: "Transaction month name (January, February, etc.)."
+        type: string
+        column: trn_month_name
+        public: true
+
+      # Invoice Identification
+      - name: invoice_number
+        description: "Invoice number."
+        type: string
+        column: invoice_number
+        public: true
+
+      - name: detail_line
+        description: "Detail line number within invoice."
+        type: number
+        column: detail_line
+        public: true
+
+      - name: invoice_date
+        description: "Invoice date."
+        type: string
+        column: invoice_date
+        public: true
+
+      - name: invoice_status
+        description: "Invoice payment status (Payment Pending, Paid, or Undefined/Null)."
+        type: string
+        column: invoice_status
+        public: true
+
+      # Branch & Location
+      - name: branch
+        description: "Branch code."
+        type: string
+        column: branch
+        public: true
+
+      - name: warehouse
+        description: "Warehouse code."
+        type: string
+        column: warehouse
+        public: true
+
+      - name: area
+        description: "Sales area/region."
+        type: string
+        column: area
+        public: true
+
+      # Customer Info
+      - name: customer_id
+        description: "Dealer ID e.g 56047,30105, etc."
+        type: number
+        column: customer_id
+        public: true
+
+      - name: customer_class
+        description: "Customer classification."
+        type: string
+        column: customer_class
+        public: true
+
+      # Order Info
+      - name: order_type
+        description: "Order type code."
+        type: string
+        column: order_type
+        public: true
+
+      - name: order_number
+        description: "Sales order number."
+        type: string
+        column: order_number
+        public: true
+
+      - name: order_line
+        description: "Sales order line number."
+        type: number
+        column: order_line
+        public: true
+
+      # Product Info
+      - name: stock_code
+        description: "Stock/Product code. Shows 'Undefined/Blank' if empty."
+        type: string
+        column: stock_code
+        public: true
+
+      - name: product_class
+        description: "Product class code (e.g., SLAO, SPIN, _FRT for freight)."
+        type: string
+        column: product_class
+        public: true
+
+      # Quantity & Amounts
+      - name: qty_invoiced
+        description: "Quantity sold."
+        type: number
+        column: qty_invoiced
+        public: true
+
+      - name: net_sales_value
+        description: "Revenue value."
+        type: number
+        column: net_sales_value
+        public: true
+
+      - name: cost_value
+        description: "Cost value."
+        type: number
+        column: cost_value
+        public: true
+
+      - name: margin
+        description: "Margin (net_sales_value - cost_value)."
+        type: number
+        column: margin
+        public: true
+
+      - name: margin_pct
+        description: "Margin percentage."
+        type: number
+        column: margin_pct
+        public: true
+
+      - name: line_invoice_disc
+        description: "Line invoice discount."
+        type: number
+        column: line_invoice_disc
+        public: true
+
+      - name: record_timestamp
+        description: "System timestamp."
+        type: string
+        column: record_timestamp
+        public: true
+
+    measures:
+      # Count Measures
+      - name: total_invoices
+        sql: "count(DISTINCT {TABLE.invoice_number})"
+        type: number
+        description: "Total number of invoices."
+
+      - name: total_invoice_lines
+        sql: "count(DISTINCT {TABLE.artrandetail_id})"
+        type: number
+        description: "Total invoice line items."
+
+      - name: total_customers
+        sql: "count(DISTINCT {TABLE.customer_id})"
+        type: number
+        description: "Total unique customers."
+
+      # Quantity Measures
+     
+
+      - name: total_qty_invoiced
+        sql: "sum(CASE WHEN {products.product_unit_type} = 'Whole Good' THEN {TABLE.qty_invoiced} ELSE 0 END)"
+        type: number
+        description: "Total Units Sold."
+
+      # Financial Measures
+      - name: total_net_sales
+        sql: "ROUND(sum({TABLE.net_sales_value}), 2)"
+        type: number
+        description: "Total dollars/revenue value of sales ."
+
+      - name: total_cost
+        sql: "sum({TABLE.cost_value})"
+        type: number
+        description: "Total cost value."
+
+      - name: total_margin
+        sql: "sum({TABLE.margin})"
+        type: number
+        description: "Total margin (sales - cost)."
+
+      - name: avg_margin_pct
+        sql: "avg({TABLE.margin_pct})"
+        type: number
+        description: "Average margin percentage."
+
+      - name: total_discount
+        sql: "sum({TABLE.line_invoice_disc})"
+        type: number
+        description: "Total line discounts."
+
+      - name: avg_net_sales
+        sql: "avg({TABLE.net_sales_value})"
+        type: number
+        description: "Average net sales value per line."
+
+      # Freight Measures
+      - name: freight_spend
+        sql: "sum(CASE WHEN {TABLE.product_class} = '_FRT' THEN {TABLE.cost_value} ELSE 0 END)"
+        type: number
+        description: "Total freight spend (cost_value where product_class is _FRT)."
+
+      - name: profit_on_freight
+        sql: "ROUND(sum(CASE WHEN {TABLE.product_class} = '_FRT' THEN ({TABLE.net_sales_value} - {TABLE.cost_value}) ELSE 0 END), 2)"
+        type: number
+        description: "Profit on freight (net_sales_value - cost_value where product_class is _FRT)."
+
+      - name: freight_revenue
+        sql: "sum(CASE WHEN {TABLE.product_class} = '_FRT' THEN {TABLE.net_sales_value} ELSE 0 END)"
+        type: number
+        description: "Total freight revenue (net_sales_value where product_class is _FRT)."
+
+      - name: freight_line_count
+        sql: "count(DISTINCT CASE WHEN {TABLE.product_class} = '_FRT' THEN {TABLE.artrandetail_id} END)"
+        type: number
+        description: "Number of freight line items."
+
+      # Product Measures
+      - name: unique_products
+        sql: "count(DISTINCT {TABLE.stock_code})"
+        type: number
+        description: "Unique products/stock codes."
+
+      - name: unique_product_classes
+        sql: "count(DISTINCT {TABLE.product_class})"
+        type: number
+        description: "Unique product classes."
+
+      # VIP Tier Measures (for Speedometer/Gauge)
+      # Returns NULL when multiple dealers selected (All), shows value only for single dealer
+      - name: dealer_sales
+        sql: "CASE WHEN count(DISTINCT {TABLE.customer_id}) > 1 THEN NULL ELSE ROUND(sum({TABLE.net_sales_value}), 2) END"
+        type: number
+        description: "Total dealer sales (net_sales_value) for VIP tier calculation. Blank when no single dealer selected."
+
+      - name: current_vip_tier
+        sql: "CASE WHEN count(DISTINCT {TABLE.customer_id}) > 1 THEN NULL WHEN sum({TABLE.net_sales_value}) >= 200000 THEN 'Platinum' WHEN sum({TABLE.net_sales_value}) >= 100001 THEN 'Gold' WHEN sum({TABLE.net_sales_value}) >= 50001 THEN 'Silver' ELSE 'Bronze' END"
+        type: string
+        description: "Current VIP tier based on total sales. Blank when no single dealer selected."
+
+      - name: gap_to_next_tier
+        sql: "CASE WHEN count(DISTINCT {TABLE.customer_id}) > 1 THEN NULL WHEN sum({TABLE.net_sales_value}) >= 200000 THEN 0 WHEN sum({TABLE.net_sales_value}) >= 100001 THEN ROUND(200000 - sum({TABLE.net_sales_value}), 2) WHEN sum({TABLE.net_sales_value}) >= 50001 THEN ROUND(100001 - sum({TABLE.net_sales_value}), 2) ELSE ROUND(50001 - sum({TABLE.net_sales_value}), 2) END"
+        type: number
+        description: "Dollar amount remaining to reach next VIP tier. Blank when no single dealer selected."
+
+      - name: next_tier_target
+        sql: "CASE WHEN count(DISTINCT {TABLE.customer_id}) > 1 THEN NULL WHEN sum({TABLE.net_sales_value}) >= 200000 THEN 200000 WHEN sum({TABLE.net_sales_value}) >= 100001 THEN 200000 WHEN sum({TABLE.net_sales_value}) >= 50001 THEN 100001 ELSE 50001 END"
+        type: number
+        description: "Target threshold for next VIP tier. Blank when no single dealer selected."
+
+      - name: progress_to_platinum_pct
+        sql: "CASE WHEN count(DISTINCT {TABLE.customer_id}) > 1 THEN NULL ELSE ROUND((sum({TABLE.net_sales_value}) / 200000.0) * 100, 2) END"
+        type: number
+        description: "Percentage progress towards Platinum tier. Blank when no single dealer selected."
+
+      - name: tier_min_threshold
+        sql: "CASE WHEN count(DISTINCT {TABLE.customer_id}) > 1 THEN NULL WHEN sum({TABLE.net_sales_value}) >= 200000 THEN 200000 WHEN sum({TABLE.net_sales_value}) >= 100001 THEN 100001 WHEN sum({TABLE.net_sales_value}) >= 50001 THEN 50001 ELSE 0 END"
+        type: number
+        description: "Minimum threshold of current tier. Blank when no single dealer selected."
+
+      - name: tier_max_threshold
+        sql: "CASE WHEN count(DISTINCT {TABLE.customer_id}) > 1 THEN NULL WHEN sum({TABLE.net_sales_value}) >= 200000 THEN 999999999 WHEN sum({TABLE.net_sales_value}) >= 100001 THEN 200000 WHEN sum({TABLE.net_sales_value}) >= 50001 THEN 100001 ELSE 50001 END"
+        type: number
+        description: "Maximum threshold of current tier. Blank when no single dealer selected."
+

@@ -1,0 +1,184 @@
+tables:
+  - name: forecast
+    sql: {{ load_sql('forecast') }}
+    description: "Sales forecast data aggregated by product category, model, and family. SalesQty1-12 represents forecast values for Jan-Dec."
+    public: true
+
+    dimensions:
+      - name: forecast_id
+        description: "Primary key (product_category + product_model + product_family)."
+        type: string
+        column: forecast_id
+        primary_key: true
+        public: true
+
+      - name: product_category
+        description: "Product category (Stairlift, Vertical, Ramps, etc.)."
+        type: string
+        column: product_category
+        public: true
+
+      - name: product_model
+        description: "Product model within category."
+        type: string
+        column: product_model
+        public: true
+
+      - name: product_family
+        description: "Product family."
+        type: string
+        column: product_family
+        public: true
+
+      - name: sku_count
+        description: "Number of unique SKUs in this grouping."
+        type: number
+        column: sku_count
+        public: true
+
+      # Monthly Forecast
+      - name: forecast_jan
+        description: "January forecast."
+        type: number
+        column: forecast_jan
+        public: true
+
+      - name: forecast_feb
+        description: "February forecast."
+        type: number
+        column: forecast_feb
+        public: true
+
+      - name: forecast_mar
+        description: "March forecast."
+        type: number
+        column: forecast_mar
+        public: true
+
+      - name: forecast_apr
+        description: "April forecast."
+        type: number
+        column: forecast_apr
+        public: true
+
+      - name: forecast_may
+        description: "May forecast."
+        type: number
+        column: forecast_may
+        public: true
+
+      - name: forecast_jun
+        description: "June forecast."
+        type: number
+        column: forecast_jun
+        public: true
+
+      - name: forecast_jul
+        description: "July forecast."
+        type: number
+        column: forecast_jul
+        public: true
+
+      - name: forecast_aug
+        description: "August forecast."
+        type: number
+        column: forecast_aug
+        public: true
+
+      - name: forecast_sep
+        description: "September forecast."
+        type: number
+        column: forecast_sep
+        public: true
+
+      - name: forecast_oct
+        description: "October forecast."
+        type: number
+        column: forecast_oct
+        public: true
+
+      - name: forecast_nov
+        description: "November forecast."
+        type: number
+        column: forecast_nov
+        public: true
+
+      - name: forecast_dec
+        description: "December forecast."
+        type: number
+        column: forecast_dec
+        public: true
+
+      # Quarterly Forecast
+      - name: forecast_q1
+        description: "Q1 forecast (Jan-Mar)."
+        type: number
+        column: forecast_q1
+        public: true
+
+      - name: forecast_q2
+        description: "Q2 forecast (Apr-Jun)."
+        type: number
+        column: forecast_q2
+        public: true
+
+      - name: forecast_q3
+        description: "Q3 forecast (Jul-Sep)."
+        type: number
+        column: forecast_q3
+        public: true
+
+      - name: forecast_q4
+        description: "Q4 forecast (Oct-Dec)."
+        type: number
+        column: forecast_q4
+        public: true
+
+      # Annual
+      - name: forecast_annual
+        description: "Total annual forecast."
+        type: number
+        column: forecast_annual
+        public: true
+
+      - name: forecast_avg_monthly
+        description: "Average monthly forecast."
+        type: number
+        column: forecast_avg_monthly
+        public: true
+
+    measures:
+      - name: total_categories
+        sql: "count(DISTINCT {TABLE.product_category})"
+        type: number
+        description: "Total unique product categories."
+
+      - name: total_skus
+        sql: "sum({TABLE.sku_count})"
+        type: number
+        description: "Total SKUs across all categories."
+
+      - name: grand_total_forecast
+        sql: "sum({TABLE.forecast_annual})"
+        type: number
+        description: "Grand total annual forecast."
+
+      - name: grand_total_q1
+        sql: "sum({TABLE.forecast_q1})"
+        type: number
+        description: "Grand total Q1 forecast."
+
+      - name: grand_total_q2
+        sql: "sum({TABLE.forecast_q2})"
+        type: number
+        description: "Grand total Q2 forecast."
+
+      - name: grand_total_q3
+        sql: "sum({TABLE.forecast_q3})"
+        type: number
+        description: "Grand total Q3 forecast."
+
+      - name: grand_total_q4
+        sql: "sum({TABLE.forecast_q4})"
+        type: number
+        description: "Grand total Q4 forecast."

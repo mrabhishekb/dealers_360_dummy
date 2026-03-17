@@ -1,0 +1,115 @@
+tables:
+
+  - name: entitlement
+    sql: {{ load_sql('entitlement') }}
+    description: "Entitlement Policy data - shows which products are assigned to which entitlement policies for access control."
+    public: true
+
+    dimensions:
+      # Primary Key (composite)
+      - name: entitlement_id
+        description: "Unique entitlement ID (policy_id + product_id - Primary Key)."
+        type: string
+        column: entitlement_id
+        primary_key: true
+        public: true
+
+      # Policy Info
+      - name: policy_id
+        description: "Entitlement policy ID."
+        type: string
+        column: policy_id
+        public: true
+
+      - name: entitlement_policy_name
+        description: "Name of the entitlement policy (e.g., All Access for Harmar, Lifeway, Ameriglide)."
+        type: string
+        column: entitlement_policy_name
+        public: true
+
+      - name: entitlement_policy_description
+        description: "Description of the entitlement policy."
+        type: string
+        column: entitlement_policy_description
+        public: true
+
+      - name: can_view_product
+        description: "Flag indicating if policy allows viewing products."
+        type: string
+        column: can_view_product
+        public: true
+
+      - name: can_view_price
+        description: "Flag indicating if policy allows viewing prices."
+        type: string
+        column: can_view_price
+        public: true
+
+      - name: is_active
+        description: "Flag indicating if the policy is active."
+        type: string
+        column: is_active
+        public: true
+
+      # Product Info
+      - name: product_code
+        description: "Product code."
+        type: string
+        column: product_code
+        public: true
+
+      - name: product_class
+        description: "Product class."
+        type: string
+        column: product_class
+        public: true
+
+      - name: product_id
+        description: "Product ID (Salesforce ID)."
+        type: string
+        column: product_id
+        public: true
+
+      # Access Description (Priority Logic)
+      - name: access_description
+        description: "Access level description. 'Accessible to All' if product has All Access for Harmar policy (overrides others). Otherwise shows specific policy access (e.g., Accessible to Lifeway)."
+        type: string
+        column: access_description
+        public: true
+
+    measures:
+      # Count Measures
+      - name: total_entitlements
+        sql: "count(*)"
+        type: number
+        description: "Total number of product-policy assignments."
+
+      - name: total_policies
+        sql: "count(DISTINCT {TABLE.policy_id})"
+        type: number
+        description: "Total unique entitlement policies."
+
+      - name: total_entitled_products
+        sql: "count(DISTINCT {TABLE.product_code})"
+        type: number
+        description: "Total unique products with entitlements."
+
+      - name: active_policies
+        sql: "count(DISTINCT CASE WHEN {TABLE.is_active} = 'true' OR {TABLE.is_active} = 'True' THEN {TABLE.policy_id} END)"
+        type: number
+        description: "Number of active policies."
+
+      - name: products_can_view
+        sql: "count(DISTINCT CASE WHEN {TABLE.can_view_product} = 'true' OR {TABLE.can_view_product} = 'True' THEN {TABLE.product_code} END)"
+        type: number
+        description: "Number of products that can be viewed."
+
+      - name: products_can_view_price
+        sql: "count(DISTINCT CASE WHEN {TABLE.can_view_price} = 'true' OR {TABLE.can_view_price} = 'True' THEN {TABLE.product_code} END)"
+        type: number
+        description: "Number of products where price can be viewed."
+
+      - name: products_per_policy
+        sql: "ROUND(count(DISTINCT {TABLE.product_code}) * 1.0 / NULLIF(count(DISTINCT {TABLE.policy_id}), 0), 2)"
+        type: number
+        description: "Average number of products per policy."

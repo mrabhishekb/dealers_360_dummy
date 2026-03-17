@@ -1,0 +1,436 @@
+tables:
+
+  - name: dealers
+    sql: {{ load_sql('dealers') }}
+    description: "Dealer master data containing comprehensive dealer information including identification, credit status, buying groups, addresses, and contact details. Primary table for Use Case 1 (VIP Tracking) and Use Case 3 (Regional Analysis)."
+    public: true
+
+    joins:
+
+      - name: artrandetail
+        relationship: one_to_many
+        sql: "{TABLE.customer_id} = {artrandetail.customer_id}"
+
+      - name: sales_order
+        relationship: one_to_many
+        sql: "{TABLE.customer_id} = {sales_order.customer_id}"
+
+      - name: vip_tier_config
+        relationship: many_to_one
+        sql: "{TABLE.buying_group_1} = {vip_tier_config.customer_buying_group}"
+
+    dimensions:
+      # === Dealer Identification ===
+      - name: customer_id
+        description: "Unique dealer identifier from Syspro. Primary key for dealer records."
+        type: number
+        column: customer_id
+        primary_key: true
+        public: true
+
+      - name: dealer_code
+        description: "Dealer business code (e.g., LIFEWAY, NDA-VINING). Used for dealer-level filtering and joins."
+        type: string
+        column: dealer_code
+        public: true
+
+      - name: dealer_name
+        description: "Full dealer business name. Used for display and reporting."
+        type: string
+        column: dealer_name
+        public: true
+
+      - name: dealer_class
+        description: "Dealer classification code (DL=Dealer, 1M=101 Mobility Franchise)."
+        type: string
+        column: dealer_class
+        public: true
+
+      - name: dealer_class_description
+        description: "Dealer classification description for reporting."
+        type: string
+        column: dealer_class_description
+        public: true
+
+      - name: branch_code
+        description: "Branch code assignment for the dealer."
+        type: string
+        column: branch_code
+        public: true
+
+      - name: branch_description
+        description: "Branch description (Main, etc.)."
+        type: string
+        column: branch_description
+        public: true
+
+      # === Credit & Financial Status (Use Case 1) ===
+      - name: credit_limit
+        description: "Dealer's credit limit in USD. Used for credit risk assessment."
+        type: number
+        column: credit_limit
+        public: true
+
+      - name: credit_status_code
+        description: "Credit status code (1=Warning, etc.)."
+        type: number
+        column: credit_status_code
+        public: true
+
+      - name: credit_status_description
+        description: "Credit status description for reporting."
+        type: string
+        column: credit_status_description
+        public: true
+
+      - name: customer_on_hold
+        description: "Whether dealer is on credit hold (Y/N)."
+        type: string
+        column: customer_on_hold
+        public: true
+
+      - name: historical_highest_balance
+        description: "Dealer's historical highest balance in USD."
+        type: number
+        column: historical_highest_balance
+        public: true
+
+      - name: outstanding_order_value
+        description: "Current outstanding order value in USD."
+        type: number
+        column: outstanding_order_value
+        public: true
+
+      - name: num_outstanding_orders
+        description: "Number of outstanding orders."
+        type: number
+        column: num_outstanding_orders
+        public: true
+
+      # === Payment Terms ===
+      - name: terms_code
+        description: "Payment terms code."
+        type: number
+        column: terms_code
+        public: true
+
+      - name: payment_terms
+        description: "Payment terms description (Net 30, Net 60, etc.)."
+        type: string
+        column: payment_terms
+        public: true
+
+      - name: price_code
+        description: "Pricing code assignment for the dealer."
+        type: string
+        column: price_code
+        public: true
+
+      - name: price_group
+        description: "Price group classification."
+        type: string
+        column: price_group
+        public: true
+
+      # === Sales Assignment ===
+      - name: primary_salesperson_code
+        description: "Primary salesperson code assigned to dealer."
+        type: string
+        column: primary_salesperson_code
+        public: true
+
+      - name: secondary_salesperson_code
+        description: "Secondary salesperson code."
+        type: string
+        column: secondary_salesperson_code
+        public: true
+
+      - name: tertiary_salesperson_code
+        description: "Tertiary salesperson code."
+        type: string
+        column: tertiary_salesperson_code
+        public: true
+
+      # === Buying Groups ===
+      - name: buying_group_1
+        description: "Primary buying group affiliation."
+        type: string
+        column: buying_group_1
+        public: true
+
+      - name: buying_group_2
+        description: "Secondary buying group."
+        type: string
+        column: buying_group_2
+        public: true
+
+      # === Activity Dates (Use Case 1: Performance Tracking) ===
+      - name: dealer_since_date
+        description: "Date dealer was added to the system. Used for dealer tenure analysis."
+        type: time
+        column: dealer_since_date
+        public: true
+
+      - name: last_order_date
+        description: "Date of dealer's most recent order. Used for activity tracking."
+        type: time
+        column: last_order_date
+        public: true
+
+      - name: last_payment_date
+        description: "Date of dealer's most recent payment."
+        type: time
+        column: last_payment_date
+        public: true
+
+      - name: dealer_tenure_days
+        description: "Days since dealer was added to system."
+        type: number
+        column: dealer_tenure_days
+        public: true
+
+      - name: dealer_tenure_years
+        description: "Years since dealer was added to system."
+        type: number
+        column: dealer_tenure_years
+        public: true
+
+      # === Billing Address (Use Case 3: Regional Analysis) ===
+      - name: area_code
+        description: "Geographic area code."
+        type: string
+        column: area_code
+        public: true
+
+      - name: area_name
+        description: "Geographic area name."
+        type: string
+        column: area_name
+        public: true
+
+      - name: billing_city
+        description: "Billing address city."
+        type: string
+        column: billing_city
+        public: true
+
+      - name: billing_state_code
+        description: "Billing address state code (IL, CA, etc.)."
+        type: string
+        column: billing_state_code
+        public: true
+
+      - name: billing_state_name
+        description: "Billing address state name."
+        type: string
+        column: billing_state_name
+        public: true
+
+      - name: billing_country
+        description: "Billing address country."
+        type: string
+        column: billing_country
+        public: true
+
+      - name: billing_postal_code
+        description: "Billing address ZIP code."
+        type: string
+        column: billing_postal_code
+        public: true
+
+      - name: billing_zip5
+        description: "5-digit billing ZIP code."
+        type: string
+        column: billing_zip5
+        public: true
+
+      - name: billing_zip3
+        description: "3-digit billing ZIP prefix."
+        type: string
+        column: billing_zip3
+        public: true
+
+      - name: billing_county
+        description: "Billing address county."
+        type: string
+        column: billing_county
+        public: true
+
+      # === Shipping Address (Use Case 3: Regional Analysis) ===
+      - name: shipping_city
+        description: "Shipping address city."
+        type: string
+        column: shipping_city
+        public: true
+
+      - name: shipping_state_code
+        description: "Shipping address state code."
+        type: string
+        column: shipping_state_code
+        public: true
+
+      - name: shipping_country
+        description: "Shipping address country."
+        type: string
+        column: shipping_country
+        public: true
+
+      - name: shipping_postal_code
+        description: "Shipping address ZIP code."
+        type: string
+        column: shipping_postal_code
+        public: true
+
+      # === Regional Classification (Use Case 3) ===
+      - name: sales_region
+        description: "Sales region assignment (Midwest, West, South, Northeast). Primary filter for regional analysis."
+        type: string
+        column: sales_region
+        public: true
+
+      - name: state_code_primary
+        description: "Primary state code for dealer."
+        type: string
+        column: state_code_primary
+        public: true
+
+      # === Contact Information ===
+      - name: primary_contact_name
+        description: "Primary contact name at dealer."
+        type: string
+        column: primary_contact_name
+        public: true
+
+      - name: primary_phone
+        description: "Primary phone number."
+        type: string
+        column: primary_phone
+        public: true
+
+      - name: primary_email
+        description: "Primary email address."
+        type: string
+        column: primary_email
+        public: true
+
+      # === Tax Information ===
+      - name: tax_exempt_status
+        description: "Tax exemption status (E=Exempt, T=Taxable)."
+        type: string
+        column: tax_exempt_status
+        public: true
+
+      - name: tax_exempt_number
+        description: "Tax exemption certificate number."
+        type: string
+        column: tax_exempt_number
+        public: true
+
+      # === Operational Flags ===
+      - name: backorder_allowed_flag
+        description: "Whether backorders are allowed (Y/N)."
+        type: string
+        column: backorder_allowed_flag
+        public: true
+
+      - name: po_required_flag
+        description: "Whether PO is required (Y/N)."
+        type: string
+        column: po_required_flag
+        public: true
+
+      # === Data Source ===
+      - name: data_source
+        description: "Source system (Syspro, Salesforce)."
+        type: string
+        column: data_source
+        public: true
+
+    measures:
+      # === Dealer Counts ===
+      - name: total_dealers
+        sql: "count(DISTINCT {TABLE.customer_id})"
+        type: number
+        description: "Total count of unique dealers."
+
+      - name: total_dealer_codes
+        sql: "count(DISTINCT {TABLE.dealer_code})"
+        type: number
+        description: "Count of unique dealer codes."
+
+      # === Credit Metrics ===
+      - name: total_credit_limit
+        sql: "sum({TABLE.credit_limit})"
+        type: number
+        description: "Total credit limit across all dealers."
+
+      - name: avg_credit_limit
+        sql: "avg({TABLE.credit_limit})"
+        type: number
+        description: "Average credit limit per dealer."
+
+      - name: max_credit_limit
+        sql: "max({TABLE.credit_limit})"
+        type: number
+        description: "Highest credit limit among dealers."
+
+      - name: total_outstanding_value
+        sql: "sum({TABLE.outstanding_order_value})"
+        type: number
+        description: "Total outstanding order value across dealers."
+
+      - name: total_outstanding_orders
+        sql: "sum({TABLE.num_outstanding_orders})"
+        type: number
+        description: "Total number of outstanding orders."
+
+      # === Tenure Metrics ===
+      - name: avg_dealer_tenure_years
+        sql: "avg({TABLE.dealer_tenure_years})"
+        type: number
+        description: "Average dealer tenure in years."
+
+      - name: max_dealer_tenure_years
+        sql: "max({TABLE.dealer_tenure_years})"
+        type: number
+        description: "Longest dealer tenure in years."
+
+      - name: min_dealer_tenure_years
+        sql: "min({TABLE.dealer_tenure_years})"
+        type: number
+        description: "Shortest dealer tenure in years."
+
+      # === Regional Metrics (Use Case 3) ===
+      - name: unique_regions
+        sql: "count(DISTINCT {TABLE.sales_region})"
+        type: number
+        description: "Count of unique sales regions."
+
+      - name: unique_states
+        sql: "count(DISTINCT {TABLE.billing_state_code})"
+        type: number
+        description: "Count of unique states."
+
+      - name: unique_cities
+        sql: "count(DISTINCT {TABLE.billing_city})"
+        type: number
+        description: "Count of unique cities."
+
+      - name: unique_zip_codes
+        sql: "count(DISTINCT {TABLE.billing_postal_code})"
+        type: number
+        description: "Count of unique ZIP codes."
+
+      # === Buying Group Metrics ===
+      - name: unique_buying_groups
+        sql: "count(DISTINCT {TABLE.buying_group_1})"
+        type: number
+        description: "Count of unique buying groups."
+
+      # === Salesperson Metrics ===
+      - name: unique_salespersons
+        sql: "count(DISTINCT {TABLE.primary_salesperson_code})"
+        type: number
+        description: "Count of unique primary salespersons."
+
+

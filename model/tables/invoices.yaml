@@ -1,0 +1,134 @@
+tables:
+
+  - name: invoices
+    sql: {{ load_sql('invoices') }}
+    description: "Details on transactions from Syspro AR."
+    public: true
+
+    dimensions:
+      # Primary Key
+      - name: invoice_number
+        description: "Invoice number (Primary Key)."
+        type: string
+        column: invoice_number
+        primary_key: true
+        public: true
+
+      # Customer Info
+      - name: customer_id
+        description: "Customer ID."
+        type: number
+        column: customer_id
+        public: true
+
+      - name: customer_po_number
+        description: "Customer PO number."
+        type: string
+        column: customer_po_number
+        public: true
+
+      # Invoice Date & Period
+      - name: invoice_date
+        description: "Invoice date."
+        type: string
+        column: invoice_date
+        public: true
+
+      - name: invoice_year
+        description: "Invoice year."
+        type: number
+        column: invoice_year
+        public: true
+
+      - name: invoice_month
+        description: "Invoice month."
+        type: number
+        column: invoice_month
+        public: true
+
+      - name: invoice_month_name
+        description: "Invoice month name (January, February, etc.)."
+        type: string
+        column: invoice_month_name
+        public: true
+
+      # Order Reference
+      - name: order_number
+        description: "Sales order number."
+        type: string
+        column: order_number
+        public: true
+
+      # Branch & Location
+      - name: branch
+        description: "Branch code."
+        type: string
+        column: branch
+        public: true
+
+      - name: area
+        description: "Sales area/region."
+        type: string
+        column: area
+        public: true
+
+      # Invoice Balances
+      - name: total_invoice_balance
+        description: "Total invoice balance."
+        type: number
+        column: total_invoice_balance
+        public: true
+
+
+      # Payment Info
+      - name: next_payment_entry
+        description: "Next payment entry number."
+        type: number
+        column: next_payment_entry
+        public: true
+
+      # System Reference
+      - name: record_timestamp
+        description: "System timestamp."
+        type: string
+        column: record_timestamp
+        public: true
+
+    measures:
+      # Count Measures
+      - name: total_invoices
+        sql: "count(DISTINCT {TABLE.invoice_number})"
+        type: number
+        description: "Total unique invoices."
+
+      - name: total_customers
+        sql: "count(DISTINCT {TABLE.customer_id})"
+        type: number
+        description: "Total unique customers."
+
+      - name: total_orders
+        sql: "count(DISTINCT {TABLE.order_number})"
+        type: number
+        description: "Total unique orders."
+
+
+
+      # Balance Measures
+      - name: sum_invoice_balance
+        sql: "sum({TABLE.total_invoice_balance})"
+        type: number
+        description: "Total invoice pending balance."
+
+      # Branch/Area Measures
+      - name: unique_branches
+        sql: "count(DISTINCT {TABLE.branch})"
+        type: number
+        description: "Number of unique branches."
+
+      - name: unique_areas
+        sql: "count(DISTINCT {TABLE.area})"
+        type: number
+        description: "Number of unique areas."
+
+    
+

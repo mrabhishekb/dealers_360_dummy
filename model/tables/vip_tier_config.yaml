@@ -1,0 +1,94 @@
+tables:
+
+  - name: vip_tier_config
+    sql: {{ load_sql('vip_tier_config') }}
+    description: "VIP tier thresholds and configuration. Defines 4-tier system: Bronze ($0-$50K), Silver ($50K-$100K), Gold ($100K-$200K), Platinum ($200K+) for Use Case 1 (VIP Spending & Performance Tracking)."
+    public: true
+
+    dimensions:
+      - name: customer_buying_group
+        description: "Customer buying group code (BZ, SL, GL, PT) for tier join."
+        type: string
+        column: customer_buying_group
+        primary_key: true
+        public: true
+
+      - name: tier
+        description: "VIP tier name (Bronze, Silver, Gold, Platinum)."
+        type: string
+        column: tier
+        public: true
+
+      - name: tier_range
+        description: "Display format for tier sales range (e.g., '$0 - $50000')."
+        type: string
+        column: tier_range
+        public: true
+
+      - name: min_threshold
+        description: "Minimum YTD sales threshold in USD to qualify for this tier."
+        type: number
+        column: min_threshold
+        public: true
+
+      - name: max_threshold
+        description: "Maximum YTD sales threshold in USD for this tier."
+        type: number
+        column: max_threshold
+        public: true
+
+      - name: tier_rank
+        description: "Numeric rank of tier (1=Bronze, 2=Silver, 3=Gold, 4=Platinum). Used for sorting."
+        type: number
+        column: tier_rank
+        public: true
+
+      - name: tier_description
+        description: "Description of tier benefits and qualifications."
+        type: string
+        column: tier_description
+        public: true
+
+      - name: previous_tier
+        description: "Previous lower tier in hierarchy."
+        type: string
+        column: previous_tier
+        public: true
+
+      - name: next_tier
+        description: "Next higher tier in hierarchy."
+        type: string
+        column: next_tier
+        public: true
+
+      - name: is_active
+        description: "Tier active status indicator."
+        type: boolean
+        column: is_active
+        public: true
+
+    measures:
+      - name: total_tiers
+        sql: "count(DISTINCT {TABLE.tier})"
+        type: number
+        description: "Total count of VIP tiers."
+
+      - name: avg_tier_threshold
+        sql: "avg({TABLE.min_threshold})"
+        type: number
+        description: "Average minimum sales threshold across tiers."
+
+      - name: max_tier_threshold
+        sql: "max({TABLE.min_threshold})"
+        type: number
+        description: "Highest tier threshold (Platinum entry at $200K)."
+
+      - name: min_tier_threshold
+        sql: "min({TABLE.min_threshold})"
+        type: number
+        description: "Lowest tier threshold (Bronze entry at $0)."
+
+      - name: tier_range_spread
+        sql: "max({TABLE.min_threshold}) - min({TABLE.min_threshold})"
+        type: number
+        description: "Spread between lowest and highest tier thresholds."

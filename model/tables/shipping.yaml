@@ -1,0 +1,166 @@
+tables:
+
+  - name: shipping
+    sql: {{ load_sql('shipping') }}
+    description: "Shipping and Order Tracking data from Harmar - shipment status, carrier information, and tracking details."
+    public: true
+    dimensions:
+      # Primary Key (InternalID)
+      - name: shipping_id
+        description: "Unique shipping ID (InternalID - Primary Key). Shows 'Undefined/Blank' if empty."
+        type: string
+        column: shipping_id
+        primary_key: true
+        public: true
+
+      # System ID
+      - name: system_id
+        description: "System record ID."
+        type: number
+        column: system_id
+        public: true
+
+      # Order Reference
+      - name: order_number
+        description: "Sales order number."
+        type: string
+        column: order_number
+        public: true
+
+      # Tracking Information
+      - name: master_tracking_id
+        description: "Master tracking ID from carrier. Shows 'Undefined/Blank' if empty."
+        type: string
+        column: master_tracking_id
+        public: true
+
+      - name: tracking_link
+        description: "URL link to track shipment."
+        type: string
+        column: tracking_link
+        public: true
+
+      # Carrier Information
+      - name: carrier_name
+        description: "Shipping carrier name (e.g., FedEx, SAIA, Southeastern Freight)."
+        type: string
+        column: carrier_name
+        public: true
+
+      # Serial Number
+      - name: serial_number
+        description: "Product serial number."
+        type: string
+        column: serial_number
+        public: true
+
+      # Salesforce Reference
+      - name: source_sf_opp
+        description: "Source Salesforce Opportunity ID."
+        type: string
+        column: source_sf_opp
+        public: true
+
+      - name: salesforce_object_type
+        description: "Salesforce object type."
+        type: string
+        column: salesforce_object_type
+        public: true
+
+      # Processing Status
+      - name: processed_status
+        description: "Processing status (Yes, No, Failed, Unknown)."
+        type: string
+        column: processed_status
+        public: true
+
+      # Shipping Status
+      - name: shipping_status
+        description: "Shipping status code (Booked, Tendered, PickedUp, Delivered)."
+        type: string
+        column: shipping_status
+        public: true
+
+      # Process Date/Time
+      - name: process_date_time
+        description: "Process date and time."
+        type: string
+        column: process_date_time
+        public: true
+
+    measures:
+      # Count Measures
+      - name: total_shipments
+        sql: "count(DISTINCT {TABLE.shipping_id})"
+        type: number
+        description: "Total number of shipments."
+
+      - name: total_orders_shipped
+        sql: "count(DISTINCT {TABLE.order_number})"
+        type: number
+        description: "Total unique orders shipped."
+
+      - name: total_tracking_numbers
+        sql: "count(DISTINCT {TABLE.master_tracking_id})"
+        type: number
+        description: "Total unique tracking numbers."
+
+      # Status Counts
+      - name: shipments_booked
+        sql: "count(DISTINCT CASE WHEN {TABLE.shipping_status} = 'Booked' THEN {TABLE.shipping_id} END)"
+        type: number
+        description: "Number of shipments booked."
+
+      - name: shipments_tendered
+        sql: "count(DISTINCT CASE WHEN {TABLE.shipping_status} = 'Tendered' THEN {TABLE.shipping_id} END)"
+        type: number
+        description: "Number of shipments tendered to carrier."
+
+      - name: shipments_picked_up
+        sql: "count(DISTINCT CASE WHEN {TABLE.shipping_status} = 'PickedUp' THEN {TABLE.shipping_id} END)"
+        type: number
+        description: "Number of shipments picked up."
+
+      - name: shipments_delivered
+        sql: "count(DISTINCT CASE WHEN {TABLE.shipping_status} = 'Delivered' THEN {TABLE.shipping_id} END)"
+        type: number
+        description: "Number of shipments delivered."
+
+      - name: shipments_in_transit
+        sql: "count(DISTINCT CASE WHEN {TABLE.shipping_status} IN ('Booked', 'Tendered', 'PickedUp') THEN {TABLE.shipping_id} END)"
+        type: number
+        description: "Number of shipments in transit (not yet delivered)."
+
+      # Processing Status Counts
+      - name: shipments_processed
+        sql: "count(DISTINCT CASE WHEN {TABLE.processed_status} = 'Yes' THEN {TABLE.shipping_id} END)"
+        type: number
+        description: "Number of shipments successfully processed."
+
+      - name: shipments_failed
+        sql: "count(DISTINCT CASE WHEN {TABLE.processed_status} = 'Failed' THEN {TABLE.shipping_id} END)"
+        type: number
+        description: "Number of shipments with failed processing."
+
+      - name: shipments_pending
+        sql: "count(DISTINCT CASE WHEN {TABLE.processed_status} = 'No' THEN {TABLE.shipping_id} END)"
+        type: number
+        description: "Number of shipments pending processing."
+
+      # Carrier Measures
+      - name: unique_carriers
+        sql: "count(DISTINCT {TABLE.carrier_name})"
+        type: number
+        description: "Number of unique carriers."
+
+      # Delivery Rate
+      - name: delivery_rate_pct
+        sql: "ROUND(count(DISTINCT CASE WHEN {TABLE.shipping_status} = 'Delivered' THEN {TABLE.shipping_id} END) * 100.0 / NULLIF(count(DISTINCT {TABLE.shipping_id}), 0), 2)"
+        type: number
+        description: "Percentage of shipments delivered."
+
+      # Serial Number Tracking
+      - name: shipments_with_serial
+        sql: "count(DISTINCT CASE WHEN {TABLE.serial_number} IS NOT NULL THEN {TABLE.shipping_id} END)"
+        type: number
+        description: "Number of shipments with serial numbers."

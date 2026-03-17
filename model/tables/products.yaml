@@ -1,0 +1,441 @@
+tables:
+
+  - name: products
+    sql: {{ load_sql('products') }}
+    description: "Product Master data from Syspro Inventory - product details, classification, costing, and attributes."
+    public: true
+
+    joins:
+      - name: entitlement
+        relationship: one_to_many
+        sql: "{TABLE.stock_code} = {entitlement.product_code}"
+
+      - name: forecast
+        sql: "{TABLE.product_category} = {forecast.product_category}"
+        relationship: many_to_one
+
+      - name: warehouses
+        sql: "{TABLE.stock_code} = {warehouses.stock_code}"
+        relationship: many_to_one
+
+      - name: pricing
+        sql: "{TABLE.stock_code} = {pricing.stock_code}"
+        relationship: many_to_one
+    dimensions:
+      # Primary Key
+      - name: stock_code
+        description: "Stock/Product code (Primary Key). Shows 'Undefined/Blank' if empty."
+        type: string
+        column: stock_code
+        primary_key: true
+        public: true
+
+      # Product Description
+      - name: description
+        description: "Short product description."
+        type: string
+        column: description
+        public: true
+
+      - name: long_description
+        description: "Detailed product description."
+        type: string
+        column: long_description
+        public: true
+
+      - name: alternate_key_1
+        description: "Alternate product key 1."
+        type: string
+        column: alternate_key_1
+        public: true
+
+      - name: alternate_key_2
+        description: "Alternate product key 2."
+        type: string
+        column: alternate_key_2
+        public: true
+
+      # Product Classification & Hierarchy
+      - name: product_class
+        description: "Product class code."
+        type: string
+        column: product_class
+        public: true
+
+      - name: product_line
+        description: "Product line."
+        type: string
+        column: product_line
+        public: true
+
+      - name: product_line_fin
+        description: "Final product line."
+        type: string
+        column: product_line_fin
+        public: true
+
+      - name: product_unit_type
+        description: "Product unit type (e.g., Parts). Shows 'Undefined/Blank' if empty."
+        type: string
+        column: product_unit_type
+        public: true
+
+      - name: product_branch
+        description: "Product branch (e.g., Home Access). Shows 'Undefined/Blank' if empty."
+        type: string
+        column: product_branch
+        public: true
+
+      - name: product_category
+        description: "Product category (e.g., Stairlift). Shows 'Undefined/Blank' if empty."
+        type: string
+        column: product_category
+        public: true
+
+      - name: product_family
+        description: "Product family grouping. Shows 'Undefined/Blank' if empty."
+        type: string
+        column: product_family
+        public: true
+
+      - name: product_model
+        description: "Product model identifier. Shows 'Undefined/Blank' if empty."
+        type: string
+        column: product_model
+        public: true
+
+      - name: product_key_feature
+        description: "Product key feature. Shows 'Undefined/Blank' if empty."
+        type: string
+        column: product_key_feature
+        public: true
+
+      - name: part_category
+        description: "Part category."
+        type: string
+        column: part_category
+        public: true
+
+      - name: abc_class
+        description: "ABC classification (A/B/C/D)."
+        type: string
+        column: abc_class
+        public: true
+
+      # Units of Measure
+      - name: stock_uom
+        description: "Stock unit of measure."
+        type: string
+        column: stock_uom
+        public: true
+
+      - name: alternate_uom
+        description: "Alternate unit of measure."
+        type: string
+        column: alternate_uom
+        public: true
+
+      - name: cost_uom
+        description: "Cost unit of measure."
+        type: string
+        column: cost_uom
+        public: true
+
+      - name: manufacture_uom
+        description: "Manufacturing unit of measure."
+        type: string
+        column: manufacture_uom
+        public: true
+
+      # Costing
+      - name: material_cost
+        description: "Material cost per unit."
+        type: number
+        column: material_cost
+        public: true
+
+      - name: labour_cost
+        description: "Labour cost per unit."
+        type: number
+        column: labour_cost
+        public: true
+
+      - name: fixed_overhead
+        description: "Fixed overhead cost per unit."
+        type: number
+        column: fixed_overhead
+        public: true
+
+      - name: variable_overhead
+        description: "Variable overhead cost per unit."
+        type: number
+        column: variable_overhead
+        public: true
+
+      - name: subcontract_cost
+        description: "Subcontract cost per unit."
+        type: number
+        column: subcontract_cost
+        public: true
+
+      - name: total_unit_cost
+        description: "Total unit cost (material + labour + overheads + subcontract)."
+        type: number
+        column: total_unit_cost
+        public: true
+
+      # Pricing
+      - name: price_category
+        description: "Price category."
+        type: string
+        column: price_category
+        public: true
+
+      - name: price_method
+        description: "Pricing method."
+        type: string
+        column: price_method
+        public: true
+
+      # Supply Chain & Planning
+      - name: supplier
+        description: "Default supplier."
+        type: string
+        column: supplier
+        public: true
+
+      - name: buyer
+        description: "Buyer code."
+        type: string
+        column: buyer
+        public: true
+
+      - name: planner
+        description: "Planner code."
+        type: string
+        column: planner
+        public: true
+
+      - name: warehouse_to_use
+        description: "Default warehouse."
+        type: string
+        column: warehouse_to_use
+        public: true
+
+      - name: average_shipping_lead_time
+        description: "Average shipping or lead time in days."
+        type: number
+        column: average_shipping_lead_time
+        public: true
+
+      - name: make_to_order_flag
+        description: "Make-to-order indicator (Y/N)."
+        type: string
+        column: make_to_order_flag
+        public: true
+
+      - name: buying_rule
+        description: "Buying rule."
+        type: string
+        column: buying_rule
+        public: true
+
+      # Physical Attributes
+      - name: mass
+        description: "Product mass/weight."
+        type: number
+        column: mass
+        public: true
+
+      - name: volume
+        description: "Product volume."
+        type: number
+        column: volume
+        public: true
+
+      - name: length
+        description: "Product length."
+        type: number
+        column: length
+        public: true
+
+      - name: width
+        description: "Product width."
+        type: number
+        column: width
+        public: true
+
+      - name: height
+        description: "Product height."
+        type: number
+        column: height
+        public: true
+
+      # Control & Configuration
+      - name: serial_method
+        description: "Serial tracking method."
+        type: string
+        column: serial_method
+        public: true
+
+      - name: kit_type
+        description: "Kit type (N=Not kit)."
+        type: string
+        column: kit_type
+        public: true
+
+      - name: component_count
+        description: "Number of components."
+        type: number
+        column: component_count
+        public: true
+
+      - name: traceable_type
+        description: "Traceability type."
+        type: string
+        column: traceable_type
+        public: true
+
+      # Status & Dates
+      - name: date_stock_added
+        description: "Date stock was added."
+        type: time
+        column: date_stock_added
+        public: true
+
+      - name: stock_on_hold
+        description: "Stock on hold flag."
+        type: string
+        column: stock_on_hold
+        public: true
+
+      - name: stock_on_hold_reason
+        description: "Reason for stock hold."
+        type: string
+        column: stock_on_hold_reason
+        public: true
+
+    measures:
+      # Count Measures
+      - name: total_products
+        sql: "count(DISTINCT {TABLE.stock_code})"
+        type: number
+        description: "Total unique products."
+
+      - name: total_product_classes
+        sql: "count(DISTINCT {TABLE.product_class})"
+        type: number
+        description: "Total unique product classes."
+
+      - name: total_product_categories
+        sql: "count(DISTINCT {TABLE.product_category})"
+        type: number
+        description: "Total unique product categories."
+
+      - name: total_product_families
+        sql: "count(DISTINCT {TABLE.product_family})"
+        type: number
+        description: "Total unique product families."
+
+      - name: total_product_branches
+        sql: "count(DISTINCT {TABLE.product_branch})"
+        type: number
+        description: "Total unique product branches."
+
+      # Costing Measures
+      - name: avg_material_cost
+        sql: "avg({TABLE.material_cost})"
+        type: number
+        description: "Average material cost."
+
+      - name: avg_labour_cost
+        sql: "avg({TABLE.labour_cost})"
+        type: number
+        description: "Average labour cost."
+
+      - name: avg_total_unit_cost
+        sql: "avg({TABLE.total_unit_cost})"
+        type: number
+        description: "Average total unit cost."
+
+      - name: total_material_cost
+        sql: "sum({TABLE.material_cost})"
+        type: number
+        description: "Sum of material costs."
+
+      - name: max_unit_cost
+        sql: "max({TABLE.total_unit_cost})"
+        type: number
+        description: "Maximum unit cost."
+
+      - name: min_unit_cost
+        sql: "min({TABLE.total_unit_cost})"
+        type: number
+        description: "Minimum unit cost."
+
+
+      # ABC Classification Counts
+      - name: products_class_a
+        sql: "count(DISTINCT CASE WHEN {TABLE.abc_class} = 'A' THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Products with ABC class A."
+
+      - name: products_class_b
+        sql: "count(DISTINCT CASE WHEN {TABLE.abc_class} = 'B' THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Products with ABC class B."
+
+      - name: products_class_c
+        sql: "count(DISTINCT CASE WHEN {TABLE.abc_class} = 'C' THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Products with ABC class C."
+
+      - name: products_class_d
+        sql: "count(DISTINCT CASE WHEN {TABLE.abc_class} = 'D' THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Products with ABC class D."
+
+      # Make-to-Order Counts
+      - name: make_to_order_products
+        sql: "count(DISTINCT CASE WHEN {TABLE.make_to_order_flag} = 'Y' THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Products that are make-to-order."
+
+      - name: make_to_stock_products
+        sql: "count(DISTINCT CASE WHEN {TABLE.make_to_order_flag} = 'N' THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Products that are make-to-stock."
+
+      # Kit & Component Counts
+      - name: kit_products
+        sql: "count(DISTINCT CASE WHEN {TABLE.kit_type} <> 'N' THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Products that are kits."
+
+      - name: products_with_components
+        sql: "count(DISTINCT CASE WHEN {TABLE.component_count} > 0 THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Products with components."
+
+      - name: total_components
+        sql: "sum({TABLE.component_count})"
+        type: number
+        description: "Total component count across all products."
+
+      # On Hold Counts
+      - name: products_on_hold
+        sql: "count(DISTINCT CASE WHEN {TABLE.stock_on_hold} IS NOT NULL AND {TABLE.stock_on_hold} <> '' THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Products currently on hold."
+
+      # Supplier & Warehouse Counts
+      - name: unique_suppliers
+        sql: "count(DISTINCT {TABLE.supplier})"
+        type: number
+        description: "Number of unique suppliers."
+
+      - name: unique_warehouses
+        sql: "count(DISTINCT {TABLE.warehouse_to_use})"
+        type: number
+        description: "Number of unique warehouses."
+

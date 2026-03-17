@@ -1,0 +1,299 @@
+tables:
+
+  - name: warehouses
+    sql: {{ load_sql('warehouses') }}
+    description: "Warehouse Inventory data - stock levels, movement, and sales by product and warehouse location."
+    public: true
+    dimensions:
+      # Primary Key (composite)
+      - name: warehouse_inventory_id
+        description: "Unique warehouse inventory ID (stock_code + warehouse - Primary Key)."
+        type: string
+        column: warehouse_inventory_id
+        primary_key: true
+        public: true
+
+      # Product & Warehouse
+      - name: stock_code
+        description: "Product/Stock code. Shows 'Undefined/Blank' if empty."
+        type: string
+        column: stock_code
+        public: true
+
+      - name: warehouse
+        description: "Warehouse code. Shows 'Undefined/Blank' if empty."
+        type: string
+        column: warehouse
+        public: true
+
+      # Current Stock Levels
+      - name: quantity_available
+        description: "Quantity on hand (available stock)."
+        type: number
+        column: quantity_available
+        public: true
+
+      - name: quantity_allocated
+        description: "Quantity allocated to orders."
+        type: number
+        column: quantity_allocated
+        public: true
+
+      - name: quantity_on_order
+        description: "Quantity on purchase order."
+        type: number
+        column: quantity_on_order
+        public: true
+
+      - name: quantity_on_backorder
+        description: "Quantity on backorder."
+        type: number
+        column: quantity_on_backorder
+        public: true
+
+      # Stock Limits
+      - name: minimum_qty
+        description: "Minimum stock quantity threshold."
+        type: number
+        column: minimum_qty
+        public: true
+
+      - name: maximum_qty
+        description: "Maximum stock quantity threshold."
+        type: number
+        column: maximum_qty
+        public: true
+
+      - name: opening_balance
+        description: "Opening balance quantity."
+        type: number
+        column: opening_balance
+        public: true
+
+      # Month-to-Date Movement
+      - name: mtd_qty_received
+        description: "Month-to-date quantity received."
+        type: number
+        column: mtd_qty_received
+        public: true
+
+      - name: mtd_qty_adjusted
+        description: "Month-to-date quantity adjusted."
+        type: number
+        column: mtd_qty_adjusted
+        public: true
+
+      - name: mtd_qty_transferred
+        description: "Month-to-date quantity transferred."
+        type: number
+        column: mtd_qty_transferred
+        public: true
+
+      - name: mtd_qty_issued
+        description: "Month-to-date quantity issued."
+        type: number
+        column: mtd_qty_issued
+        public: true
+
+      - name: mtd_qty_sold
+        description: "Month-to-date quantity sold."
+        type: number
+        column: mtd_qty_sold
+        public: true
+
+      # Year-to-Date Movement
+      - name: ytd_qty_sold
+        description: "Year-to-date quantity sold."
+        type: number
+        column: ytd_qty_sold
+        public: true
+
+      - name: ytd_qty_issued
+        description: "Year-to-date quantity issued."
+        type: number
+        column: ytd_qty_issued
+        public: true
+
+      - name: prev_year_qty_sold
+        description: "Previous year quantity sold."
+        type: number
+        column: prev_year_qty_sold
+        public: true
+
+      # Costing & Sales Value
+      - name: unit_cost
+        description: "Unit cost."
+        type: number
+        column: unit_cost
+        public: true
+
+      - name: mtd_sales_value
+        description: "Month-to-date sales value."
+        type: number
+        column: mtd_sales_value
+        public: true
+
+      - name: ytd_sales_value
+        description: "Year-to-date sales value."
+        type: number
+        column: ytd_sales_value
+        public: true
+
+      # Monthly Sales (12 months)
+      - name: sales_qty_month_1
+        description: "Sales quantity month 1."
+        type: number
+        column: sales_qty_month_1
+        public: true
+
+      - name: sales_qty_month_2
+        description: "Sales quantity month 2."
+        type: number
+        column: sales_qty_month_2
+        public: true
+
+      - name: sales_qty_month_3
+        description: "Sales quantity month 3."
+        type: number
+        column: sales_qty_month_3
+        public: true
+
+      - name: sales_qty_month_4
+        description: "Sales quantity month 4."
+        type: number
+        column: sales_qty_month_4
+        public: true
+
+      - name: sales_qty_month_5
+        description: "Sales quantity month 5."
+        type: number
+        column: sales_qty_month_5
+        public: true
+
+      - name: sales_qty_month_6
+        description: "Sales quantity month 6."
+        type: number
+        column: sales_qty_month_6
+        public: true
+
+      - name: sales_qty_month_7
+        description: "Sales quantity month 7."
+        type: number
+        column: sales_qty_month_7
+        public: true
+
+      - name: sales_qty_month_8
+        description: "Sales quantity month 8."
+        type: number
+        column: sales_qty_month_8
+        public: true
+
+      - name: sales_qty_month_9
+        description: "Sales quantity month 9."
+        type: number
+        column: sales_qty_month_9
+        public: true
+
+      - name: sales_qty_month_10
+        description: "Sales quantity month 10."
+        type: number
+        column: sales_qty_month_10
+        public: true
+
+      - name: sales_qty_month_11
+        description: "Sales quantity month 11."
+        type: number
+        column: sales_qty_month_11
+        public: true
+
+      - name: sales_qty_month_12
+        description: "Sales quantity month 12."
+        type: number
+        column: sales_qty_month_12
+        public: true
+
+    measures:
+      # Count Measures
+      - name: total_inventory_records
+        sql: "count(DISTINCT {TABLE.warehouse_inventory_id})"
+        type: number
+        description: "Total inventory records."
+
+      - name: total_products
+        sql: "count(DISTINCT {TABLE.stock_code})"
+        type: number
+        description: "Total unique products in inventory."
+
+      - name: total_warehouses
+        sql: "count(DISTINCT {TABLE.warehouse})"
+        type: number
+        description: "Total unique warehouses."
+
+      # Stock Level Measures
+      - name: total_quantity_available
+        sql: "sum({TABLE.quantity_available})"
+        type: number
+        description: "Total quantity available across all products."
+
+      - name: total_quantity_allocated
+        sql: "sum({TABLE.quantity_allocated})"
+        type: number
+        description: "Total quantity allocated."
+
+      - name: total_quantity_on_order
+        sql: "sum({TABLE.quantity_on_order})"
+        type: number
+        description: "Total quantity on order."
+
+      - name: total_quantity_on_backorder
+        sql: "sum({TABLE.quantity_on_backorder})"
+        type: number
+        description: "Total quantity on backorder."
+
+      # Inventory Value
+      - name: total_inventory_value
+        sql: "sum({TABLE.quantity_available} * {TABLE.unit_cost})"
+        type: number
+        description: "Total inventory value (qty * unit cost)."
+
+      - name: avg_unit_cost
+        sql: "avg({TABLE.unit_cost})"
+        type: number
+        description: "Average unit cost."
+
+      # Sales Measures
+      - name: total_mtd_qty_sold
+        sql: "sum({TABLE.mtd_qty_sold})"
+        type: number
+        description: "Total month-to-date quantity sold."
+
+      - name: total_ytd_qty_sold
+        sql: "sum({TABLE.ytd_qty_sold})"
+        type: number
+        description: "Total year-to-date quantity sold."
+
+      - name: total_mtd_sales_value
+        sql: "sum({TABLE.mtd_sales_value})"
+        type: number
+        description: "Total month-to-date sales value."
+
+      - name: total_ytd_sales_value
+        sql: "sum({TABLE.ytd_sales_value})"
+        type: number
+        description: "Total year-to-date sales value."
+
+      # Stock Status
+      - name: products_out_of_stock
+        sql: "count(DISTINCT CASE WHEN {TABLE.quantity_available} <= 0 THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Number of products out of stock."
+
+      - name: products_below_minimum
+        sql: "count(DISTINCT CASE WHEN {TABLE.quantity_available} < {TABLE.minimum_qty} THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Number of products below minimum quantity."
+
+      - name: products_with_backorders
+        sql: "count(DISTINCT CASE WHEN {TABLE.quantity_on_backorder} > 0 THEN {TABLE.stock_code} END)"
+        type: number
+        description: "Number of products with backorders."

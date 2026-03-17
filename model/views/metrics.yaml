@@ -1,0 +1,24 @@
+views:
+  - name: orders_by_unit_price
+    description: Tracks the total invoices amount across all invoices, helping to identify the total invoices amount
+    public: true
+    meta:
+      title: Orders by Unit Price
+      tags:   
+        - DPUsecase.Dealers Spending and Performance tracking
+        - DPTier.Consumer Aligned
+        - DPDomain.Dealers Performance
+      metric:
+        expression: "*/60  * * * *"
+        timezone: "UTC"
+        window: "month"
+        excludes: 
+          - sales_order.unit_price 
+    tables:
+      - join_path: sales_order
+        prefix: true
+        includes:
+          - total_unit_price
+          - unit_price
+          - order_number
+          - order_date

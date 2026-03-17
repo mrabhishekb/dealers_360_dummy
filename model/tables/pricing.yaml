@@ -1,0 +1,47 @@
+tables:
+  - name: pricing
+    sql: {{ load_sql('pricing') }}
+    description: "Product pricing combining sor_contract_price and inv_price."
+    public: true
+
+    dimensions:
+
+      - name: stock_code
+        description: "Product stock code."
+        type: string
+        column: stock_code
+        primary_key: true
+        public: true
+
+      - name: customer_buy_group
+        description: "Customer buying group from sor_contract_price. 'NONE' for inv_price."
+        type: string
+        column: customer_buy_group
+        public: true
+
+      - name: price
+        description: "Product price (fixedprice from sor_contract_price or sellingprice from inv_price)."
+        type: number
+        column: price
+        public: true
+
+    measures:
+      - name: total_products
+        sql: "count(DISTINCT {TABLE.stock_code})"
+        type: number
+        description: "Total unique products with pricing."
+
+      - name: avg_price
+        sql: "ROUND(avg({TABLE.price}), 2)"
+        type: number
+        description: "Average price."
+
+      - name: min_price
+        sql: "ROUND(min({TABLE.price}), 2)"
+        type: number
+        description: "Minimum price."
+
+      - name: max_price
+        sql: "ROUND(max({TABLE.price}), 2)"
+        type: number
+        description: "Maximum price."

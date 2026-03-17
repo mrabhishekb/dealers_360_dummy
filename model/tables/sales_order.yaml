@@ -1,0 +1,372 @@
+tables:
+
+  - name: sales_order
+    sql: {{ load_sql('sales_order') }}
+    description: "Sales Order data from Syspro - order header and line item details including customer, product, pricing, and shipping information."
+    public: true
+
+    joins:
+
+      - name: shipping
+        sql: "{TABLE.order_number} = {shipping.order_number}"
+        relationship: one_to_many
+
+    dimensions:
+      # Primary Key
+      - name: order_number
+        description: "Sales order number (Primary Key)."
+        type: string
+        column: order_number
+        primary_key: true
+        public: true
+
+      # Order Line Info
+      - name: order_line
+        description: "Sales order line number."
+        type: number
+        column: order_line
+        public: true
+
+      - name: next_detail_line
+        description: "Next detail line number."
+        type: number
+        column: next_detail_line
+        public: true
+
+      # Order Status & Type
+      - name: order_status_code
+        description: "Order status code (1=Open, 2=Open Back Order, 3=Released Back Order, 4=In Warehouse, 8=Ready to Invoice, 9=Invoiced)."
+        type: number
+        column: order_status_code
+        public: true
+
+      - name: order_status
+        description: "Order status description (Open Order, Open Back Order, Released Back Order, In Warehouse, Ready to Invoice, Invoiced, In Progress)."
+        type: string
+        column: order_status
+        public: true
+
+      - name: order_type
+        description: "Order type code."
+        type: string
+        column: order_type
+        public: true
+
+      # Invoice Reference
+      - name: last_invoice
+        description: "Last invoice number associated with order."
+        type: string
+        column: last_invoice
+        public: true
+
+      # Flags
+      - name: active_flag
+        description: "Active flag (Y/N)."
+        type: string
+        column: active_flag
+        public: true
+
+      - name: cancelled_flag
+        description: "Cancelled flag (Y/N)."
+        type: string
+        column: cancelled_flag
+        public: true
+
+      # Order Date
+      - name: order_date
+        description: "Order date."
+        type: time
+        column: order_date
+        public: true
+
+      - name: order_year
+        description: "Order year (extracted from order_date). For Dashboard 1 YTD filter."
+        type: number
+        column: order_year
+        public: true
+
+      - name: order_month
+        description: "Order month (1-12, extracted from order_date). For Dashboard 1 monthly charts."
+        type: number
+        column: order_month
+        public: true
+
+      - name: order_month_name
+        description: "Order month name (January, February, etc.)."
+        type: string
+        column: order_month_name
+        public: true
+
+      # Customer Info
+      - name: customer_id
+        description: "Customer ID."
+        type: number
+        column: customer_id
+        public: true
+
+      - name: customer_po_number
+        description: "Customer PO number."
+        type: string
+        column: customer_po_number
+        public: true
+
+      # Branch & Location
+      - name: branch
+        description: "Branch code."
+        type: string
+        column: branch
+        public: true
+
+      - name: area
+        description: "Sales area/region."
+        type: string
+        column: area
+        public: true
+
+      - name: warehouse
+        description: "Warehouse code."
+        type: string
+        column: warehouse
+        public: true
+
+      # Shipping Address
+      - name: ship_address_1
+        description: "Ship address line 1."
+        type: string
+        column: ship_address_1
+        public: true
+
+      - name: ship_address_2
+        description: "Ship address line 2."
+        type: string
+        column: ship_address_2
+        public: true
+
+      - name: ship_address_3
+        description: "Ship address line 3 (city)."
+        type: string
+        column: ship_address_3
+        public: true
+
+      - name: ship_address_3_loc
+        description: "Ship address 3 location."
+        type: string
+        column: ship_address_3_loc
+        public: true
+
+      - name: ship_address_4
+        description: "Ship address line 4 (state)."
+        type: string
+        column: ship_address_4
+        public: true
+
+      - name: ship_address_5
+        description: "Ship address line 5 (country)."
+        type: string
+        column: ship_address_5
+        public: true
+
+      - name: ship_postal_code
+        description: "Ship postal/zip code."
+        type: string
+        column: ship_postal_code
+        public: true
+
+      # Freight
+      - name: free_freight
+        description: "Free freight flag (Y/N)."
+        type: string
+        column: free_freight
+        public: true
+
+      # Product Info
+      - name: product_class
+        description: "Product class code."
+        type: string
+        column: product_class
+        public: true
+
+      - name: stock_code
+        description: "Stock/Product code. Shows 'Undefined/Blank' if empty."
+        type: string
+        column: stock_code
+        public: true
+
+      - name: product_name
+        description: "Product description/name."
+        type: string
+        column: product_name
+        public: true
+
+      # Product Info (denormalized from inventory/products)
+      - name: product_category
+        description: "Product category (denormalized from products table)."
+        type: string
+        column: product_category
+        public: true
+
+      - name: product_family
+        description: "Product family (denormalized from products table)."
+        type: string
+        column: product_family
+        public: true
+
+      - name: product_model
+        description: "Product model (denormalized from products table)."
+        type: string
+        column: product_model
+        public: true
+
+      - name: product_unit_type
+        description: "Product unit type - Whole Good, Parts, etc. (denormalized from products table)."
+        type: string
+        column: product_unit_type
+        public: true
+
+      - name: product_branch
+        description: "Product branch (denormalized from products table)."
+        type: string
+        column: product_branch
+        public: true
+
+      # Pricing
+      - name: unit_price
+        description: "Unit selling price."
+        type: number
+        column: unit_price
+        public: true
+
+      - name: unit_cost
+        description: "Unit cost."
+        type: number
+        column: unit_cost
+        public: true
+
+      - name: line_margin
+        description: "Line margin (unit_price - unit_cost)."
+        type: number
+        column: line_margin
+        public: true
+
+      - name: margin_pct
+        description: "Margin percentage."
+        type: number
+        column: margin_pct
+        public: true
+
+    measures:
+      # Count Measures
+      - name: total_orders
+        sql: "count(DISTINCT {TABLE.order_number})"
+        type: number
+        description: "Total unique sales orders."
+
+      - name: total_order_lines
+        sql: "count(*)"
+        type: number
+        description: "Total order line items."
+
+      - name: total_customers
+        sql: "count(DISTINCT {TABLE.customer_id})"
+        type: number
+        description: "Total unique customers."
+
+      - name: total_products
+        sql: "count(DISTINCT {TABLE.stock_code})"
+        type: number
+        description: "Total unique products."
+
+      # Status Measures
+      - name: active_orders
+        sql: "count(DISTINCT CASE WHEN {TABLE.active_flag} = 'Y' THEN {TABLE.order_number} END)"
+        type: number
+        description: "Number of active orders."
+
+      - name: cancelled_orders
+        sql: "count(DISTINCT CASE WHEN {TABLE.cancelled_flag} = 'Y' THEN {TABLE.order_number} END)"
+        type: number
+        description: "Number of cancelled orders."
+
+      - name: open_orders
+        sql: "count(DISTINCT CASE WHEN {TABLE.order_status} = 'Open Order' THEN {TABLE.order_number} END)"
+        type: number
+        description: "Number of open orders."
+
+      - name: back_orders
+        sql: "count(DISTINCT CASE WHEN {TABLE.order_status} IN ('Open Back Order', 'Released Back Order') THEN {TABLE.order_number} END)"
+        type: number
+        description: "Number of back orders (open + released)."
+
+      - name: in_warehouse_orders
+        sql: "count(DISTINCT CASE WHEN {TABLE.order_status} = 'In Warehouse' THEN {TABLE.order_number} END)"
+        type: number
+        description: "Number of orders in warehouse."
+
+      - name: ready_to_invoice_orders
+        sql: "count(DISTINCT CASE WHEN {TABLE.order_status} = 'Ready to Invoice' THEN {TABLE.order_number} END)"
+        type: number
+        description: "Number of orders ready to invoice."
+
+      - name: invoiced_orders
+        sql: "count(DISTINCT CASE WHEN {TABLE.order_status} = 'Invoiced' THEN {TABLE.order_number} END)"
+        type: number
+        description: "Number of invoiced orders."
+
+      - name: in_suspense_orders
+        sql: "count(DISTINCT CASE WHEN {TABLE.order_status} = 'In Suspense' THEN {TABLE.order_number} END)"
+        type: number
+        description: "Number of orders in suspense."
+
+      # Revenue Measures
+      - name: total_unit_price
+        sql: "sum({TABLE.unit_price})"
+        type: number
+        description: "Total unit prices."
+
+      - name: total_cost
+        sql: "sum({TABLE.unit_cost})"
+        type: number
+        description: "Total cost."
+
+      - name: total_margin
+        sql: "sum({TABLE.line_margin})"
+        type: number
+        description: "Total margin (unit_price - cost)."
+
+      - name: avg_unit_price
+        sql: "avg({TABLE.unit_price})"
+        type: number
+        description: "Average unit price."
+
+      - name: avg_unit_cost
+        sql: "avg({TABLE.unit_cost})"
+        type: number
+        description: "Average unit cost."
+
+      - name: avg_margin_pct
+        sql: "avg({TABLE.margin_pct})"
+        type: number
+        description: "Average margin percentage."
+
+      # Freight Measures
+      - name: orders_with_free_freight
+        sql: "count(DISTINCT CASE WHEN {TABLE.free_freight} = 'Y' THEN {TABLE.order_number} END)"
+        type: number
+        description: "Number of orders with free freight."
+
+      # Location Measures
+      - name: unique_branches
+        sql: "count(DISTINCT {TABLE.branch})"
+        type: number
+        description: "Number of unique branches."
+
+      - name: unique_areas
+        sql: "count(DISTINCT {TABLE.area})"
+        type: number
+        description: "Number of unique areas."
+
+      - name: unique_warehouses
+        sql: "count(DISTINCT {TABLE.warehouse})"
+        type: number
+        description: "Number of unique warehouses."
+
