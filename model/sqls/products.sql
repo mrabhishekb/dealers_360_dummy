@@ -60,12 +60,12 @@ SELECT
     NULLIF(TRIM(manufacture_uom), '') AS manufacture_uom,
     
     -- Costing
-    material_cost,
-    labour_cost,
-    fix_overhead AS fixed_overhead,
-    variable_overhead,
-    sub_contract_cost AS subcontract_cost,
-    COALESCE(material_cost, 0) + COALESCE(labour_cost, 0) + COALESCE(fix_overhead, 0) + COALESCE(variable_overhead, 0) + COALESCE(sub_contract_cost, 0) AS total_unit_cost,
+    CAST(material_cost AS DOUBLE) AS material_cost,
+    CAST(labour_cost AS DOUBLE) AS labour_cost,
+    CAST(fix_overhead AS DOUBLE) AS fixed_overhead,
+    CAST(variable_overhead AS DOUBLE) AS variable_overhead,
+    CAST(sub_contract_cost AS DOUBLE) AS subcontract_cost,
+    COALESCE(CAST(material_cost AS DOUBLE), 0) + COALESCE(CAST(labour_cost AS DOUBLE), 0) + COALESCE(CAST(fix_overhead AS DOUBLE), 0) + COALESCE(CAST(variable_overhead AS DOUBLE), 0) + COALESCE(CAST(sub_contract_cost AS DOUBLE), 0) AS total_unit_cost,
     
     -- Pricing
     NULLIF(TRIM(price_category), '') AS price_category,
@@ -76,21 +76,21 @@ SELECT
     NULLIF(TRIM(buyer), '') AS buyer,
     NULLIF(TRIM(planner), '') AS planner,
     NULLIF(TRIM(warehouse_to_use), '') AS warehouse_to_use,
-    shipping_lead_time as average_shipping_lead_time,
+    CAST(shipping_lead_time AS INTEGER) AS average_shipping_lead_time,
     NULLIF(TRIM(make_to_order_flag), '') AS make_to_order_flag,
     NULLIF(TRIM(buying_rule), '') AS buying_rule,
     
     -- Physical Attributes
-    mass,
-    volume,
-    length,
-    width,
-    height,
+    CAST(mass AS DOUBLE) AS mass,
+    CAST(volume AS DOUBLE) AS volume,
+    CAST(length AS DOUBLE) AS length,
+    CAST(width AS DOUBLE) AS width,
+    CAST(height AS DOUBLE) AS height,
     
     -- Control & Configuration
     NULLIF(TRIM(serial_method), '') AS serial_method,
     NULLIF(TRIM(kit_type), '') AS kit_type,
-    component_count,
+    CAST(component_count AS INTEGER) AS component_count,
     NULLIF(TRIM(traceable_type), '') AS traceable_type,
     
     -- Status & Dates

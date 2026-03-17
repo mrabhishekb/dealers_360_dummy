@@ -11,7 +11,7 @@ SELECT
     CAST(s.next_detail_line AS INTEGER) AS next_detail_line,
     
     -- Order Status & Type
-    s.order_status AS order_status_code,
+    CAST(s.order_status AS INTEGER) AS order_status_code,
     CASE 
         WHEN s.order_status = 1 THEN 'Open Order'
         WHEN s.order_status = 2 THEN 'Open Back Order'
@@ -35,8 +35,8 @@ SELECT
     s.order_date AS order_date,
     
     -- Order Date Components (for Dashboard 1 monthly charts)
-    EXTRACT(YEAR FROM s.order_date) AS order_year,
-    EXTRACT(MONTH FROM s.order_date) AS order_month,
+    CAST(EXTRACT(YEAR FROM s.order_date) AS INTEGER) AS order_year,
+    CAST(EXTRACT(MONTH FROM s.order_date) AS INTEGER) AS order_month,
     CASE EXTRACT(MONTH FROM s.order_date)
         WHEN 1 THEN 'January'
         WHEN 2 THEN 'February'

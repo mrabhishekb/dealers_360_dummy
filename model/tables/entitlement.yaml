@@ -35,19 +35,19 @@ tables:
 
       - name: can_view_product
         description: "Flag indicating if policy allows viewing products."
-        type: string
+        type: boolean
         column: can_view_product
         public: true
 
       - name: can_view_price
         description: "Flag indicating if policy allows viewing prices."
-        type: string
+        type: boolean
         column: can_view_price
         public: true
 
       - name: is_active
         description: "Flag indicating if the policy is active."
-        type: string
+        type: boolean
         column: is_active
         public: true
 
@@ -95,17 +95,17 @@ tables:
         description: "Total unique products with entitlements."
 
       - name: active_policies
-        sql: "count(DISTINCT CASE WHEN {TABLE.is_active} = 'true' OR {TABLE.is_active} = 'True' THEN {TABLE.policy_id} END)"
+        sql: "count(DISTINCT CASE WHEN {TABLE.is_active} = true THEN {TABLE.policy_id} END)"
         type: number
         description: "Number of active policies."
 
       - name: products_can_view
-        sql: "count(DISTINCT CASE WHEN {TABLE.can_view_product} = 'true' OR {TABLE.can_view_product} = 'True' THEN {TABLE.product_code} END)"
+        sql: "count(DISTINCT CASE WHEN {TABLE.can_view_product} = true THEN {TABLE.product_code} END)"
         type: number
         description: "Number of products that can be viewed."
 
       - name: products_can_view_price
-        sql: "count(DISTINCT CASE WHEN {TABLE.can_view_price} = 'true' OR {TABLE.can_view_price} = 'True' THEN {TABLE.product_code} END)"
+        sql: "count(DISTINCT CASE WHEN {TABLE.can_view_price} = true THEN {TABLE.product_code} END)"
         type: number
         description: "Number of products where price can be viewed."
 

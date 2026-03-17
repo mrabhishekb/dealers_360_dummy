@@ -87,6 +87,13 @@ tables:
         column: next_payment_entry
         public: true
 
+      # Quantity
+      - name: qty_invoiced
+        description: "Total quantity invoiced."
+        type: number
+        column: qty_invoiced
+        public: true
+
       # System Reference
       - name: record_timestamp
         description: "System timestamp."

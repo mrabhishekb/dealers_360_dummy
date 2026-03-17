@@ -1,8 +1,4 @@
--- Entitlement Policy Data (DUMMY DATA - icebase.dealers_360)
--- Priority: "All Access for Harmar" overrides all other policies
--- If a product has "All Access for Harmar", show "Accessible to All" and ignore other policies
-
-WITH product_policies AS (
+ITH product_policies AS (
     -- Get all product-policy combinations
     SELECT 
         epr.productid AS entitlement_product_id,
