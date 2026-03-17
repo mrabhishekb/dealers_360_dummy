@@ -48,5 +48,5 @@ SELECT
     -- Process Date/Time
     processdatetime AS process_date_time
 
-FROM "icebase"."dealers_360".harmar_order_tracking
+FROM "icebase"."dealers_360_1".harmar_order_tracking
 WHERE internalid IS NOT NULL AND TRIM(internalid) <> ''

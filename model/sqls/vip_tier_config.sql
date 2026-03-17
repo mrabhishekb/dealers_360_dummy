@@ -36,4 +36,4 @@ SELECT
         ELSE 'Platinum (Max)'
     END AS next_tier,
     true AS is_active
-FROM "icebase"."dealers_360".vip_tier_config
+FROM "icebase"."dealers_360_1".vip_tier_config

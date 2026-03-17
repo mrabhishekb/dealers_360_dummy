@@ -1,20 +1,20 @@
-ITH product_policies AS (
+WITH product_policies AS (
     -- Get all product-policy combinations
     SELECT 
         epr.productid AS entitlement_product_id,
         ep.id AS policy_id,
         TRIM(ep.name) AS policy_name,
         TRIM(ep.description) AS policy_description,
-        ep.canviewproduct AS can_view_product,
-        ep.canviewprice AS can_view_price,
-        ep.isactive AS is_active,
+        CAST(ep.canviewproduct AS VARCHAR) AS can_view_product,
+        CAST(ep.canviewprice AS VARCHAR) AS can_view_price,
+        CAST(ep.isactive AS VARCHAR) AS is_active,
         p.productcode AS product_code,
         p.productclass AS product_class,
         p.product_id__c AS product_id
-    FROM "icebase"."dealers_360".entitlement_product epr
-    LEFT JOIN "icebase"."dealers_360".entitlement_policy ep
+    FROM "icebase"."dealers_360_1".entitlement_product epr
+    LEFT JOIN "icebase"."dealers_360_1".entitlement_policy ep
         ON epr.policyid = ep.id
-    LEFT JOIN "icebase"."dealers_360".product p
+    LEFT JOIN "icebase"."dealers_360_1".product p
         ON SUBSTR(epr.productid, 1, 15) = SUBSTR(p.product_id__c, 1, 15)
     WHERE epr.policyid IS NOT NULL
 ),

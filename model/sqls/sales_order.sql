@@ -110,7 +110,7 @@ SELECT
         ELSE 0 
     END AS margin_pct
 
-FROM "icebase"."dealers_360".sales_info s
-LEFT JOIN "icebase"."dealers_360".inventory_info p
+FROM "icebase"."dealers_360_1".sales_info s
+LEFT JOIN "icebase"."dealers_360_1".inventory_info p
     ON TRIM(s.m_stock_code) = TRIM(CAST(p.stock_code AS VARCHAR))
 WHERE s.sales_order IS NOT NULL AND TRIM(s.sales_order) <> ''

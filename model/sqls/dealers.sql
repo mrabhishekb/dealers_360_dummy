@@ -118,5 +118,5 @@ SELECT
     -- Data Source
     data_source
     
-FROM "icebase"."dealers_360".dealers_data
+FROM "icebase"."dealers_360_1".dealers_data
 WHERE dealer_code IS NOT NULL

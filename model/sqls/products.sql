@@ -98,5 +98,5 @@ SELECT
     NULLIF(TRIM(stock_on_hold), '') AS stock_on_hold,
     NULLIF(TRIM(stock_on_hold_reason), '') AS stock_on_hold_reason
 
-FROM "icebase"."dealers_360".inventory_info
+FROM "icebase"."dealers_360_1".inventory_info
 WHERE stock_code IS NOT NULL AND TRIM(stock_code) <> ''

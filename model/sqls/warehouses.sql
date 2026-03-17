@@ -60,5 +60,5 @@ SELECT
     CAST(salesqty11 AS DOUBLE) AS sales_qty_month_11,
     CAST(salesqty12 AS DOUBLE) AS sales_qty_month_12
 
-FROM "icebase"."dealers_360".inv_warehouse
+FROM "icebase"."dealers_360_1".inv_warehouse
 WHERE stockcode IS NOT NULL AND TRIM(stockcode) <> ''
