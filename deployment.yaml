@@ -21,7 +21,7 @@ lens:
       - --ref=master
 
   api:   # optional
-    replicas: 3 # optional
+    replicas: 1 # optional
     logLevel: Info  # optional
     envs:
       LENS2SQL_DB_QUERY_TIMEOUT: 600
@@ -34,7 +34,7 @@ lens:
         cpu: 6000m
         memory: 8000Mi
   worker: # optional
-    replicas: 2 # optional
+    replicas: 1 # optional
     logLevel: Info  # optional
     envs:
       LENS2SQL_DB_QUERY_TIMEOUT: 600
